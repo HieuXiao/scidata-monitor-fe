@@ -1,22 +1,58 @@
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import AppLayout from "@/components/layout/AppLayout";
-// import DashboardPage from "@/pages/DashboardPage";
-// ... other imports
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { AppShell } from "./components/layout/AppShell";
+import DashboardPage from "./pages/DashboardPage";
+import { NotFoundPage, PlaceholderPage } from "./pages/RouteStates";
+import "./App.css";
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div className="p-8"><h1>SciData Monitor</h1><p>Welcome to the dashboard. Layout coming soon!</p></div>,
+    element: <AppShell />,
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
-      { path: "dashboard", element: <div>Dashboard Content</div> },
-      // ... other routes
+      { path: "dashboard", element: <DashboardPage /> },
+      {
+        path: "trends",
+        element: (
+          <PlaceholderPage
+            title="Trend Analytics"
+            description="Trend charts are reserved for keyword momentum exploration and timeline diagnostics."
+          />
+        ),
+      },
+      {
+        path: "topics",
+        element: (
+          <PlaceholderPage
+            title="Topic Explorer"
+            description="Topic clustering and semantic scatter views will be mounted in this section."
+          />
+        ),
+      },
+      {
+        path: "network",
+        element: (
+          <PlaceholderPage
+            title="Collaboration Network"
+            description="Co-authorship graph analytics and node-level details will be visualized here."
+          />
+        ),
+      },
+      {
+        path: "institutions",
+        element: (
+          <PlaceholderPage
+            title="Institution Analytics"
+            description="Institution benchmark and output comparison screens will appear in this module."
+          />
+        ),
+      },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
-  { path: "*", element: <div>404 Not Found</div> },
 ]);
 
 function App() {
