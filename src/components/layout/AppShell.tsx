@@ -1,15 +1,5 @@
-import {
-  CalendarDays,
-  CircleHelp,
-  Globe2,
-  LayoutGrid,
-  LogIn,
-  MessageSquare,
-  Search,
-  Tv,
-} from "lucide-react";
-import { NavLink, Outlet } from "react-router-dom";
-import { NAV_ITEMS, PULSE_ITEMS, SIGNAL_ITEMS } from "../../data/dashboardData";
+import { LogIn } from "lucide-react";
+import { Outlet } from "react-router-dom";
 
 export function AppShell() {
   return (
