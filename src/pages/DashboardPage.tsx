@@ -1,13 +1,12 @@
-import { Settings2 } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 import {
   MAP_POINTS,
   RESEARCH_FEED,
 } from "../data/dashboardData";
+import { WorldMap } from "../components/WorldMap";
 
 export default function DashboardPage() {
   const [searchInput, setSearchInput] = useState("");
-  const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
@@ -78,142 +77,7 @@ export default function DashboardPage() {
       </aside>
 
       <section className="map-section">
-        <div className="map-container">
-          <div className="map-placeholder-content">
-            <svg className="world-map" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0a1628" />
-                  <stop offset="100%" stopColor="#0f2942" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-
-              {/* Ocean background */}
-              <rect width="1200" height="600" fill="url(#oceanGrad)" />
-
-              {/* Simplified continent shapes */}
-              <g className="continents" fill="#1a3f5e" opacity="0.6">
-                {/* North America */}
-                <path d="M 80 120 L 130 100 L 150 140 L 140 180 L 90 160 Z" />
-                {/* South America */}
-                <path d="M 110 200 L 140 180 L 150 280 L 120 300 Z" />
-                {/* Europe */}
-                <path d="M 270 100 L 320 90 L 330 140 L 280 145 Z" />
-                {/* Africa */}
-                <path d="M 310 160 L 360 140 L 380 300 L 320 320 Z" />
-                {/* Asia */}
-                <path d="M 360 100 L 520 80 L 550 200 L 400 220 Z" />
-                {/* Australia */}
-                <path d="M 520 380 L 560 360 L 570 420 L 540 430 Z" />
-              </g>
-
-              {/* Map points with glow effect */}
-              {MAP_POINTS.map((point) => {
-                const isHovered = hoveredPoint === point.id;
-                const size = point.level === "high" ? 12 : point.level === "medium" ? 8 : 6;
-                const color = 
-                  point.level === "high" 
-                    ? "#00d4ff" 
-                    : point.level === "medium" 
-                    ? "#0095da" 
-                    : "#00ff88";
-
-                return (
-                  <g
-                    key={point.id}
-                    onMouseEnter={() => setHoveredPoint(point.id)}
-                    onMouseLeave={() => setHoveredPoint(null)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {/* Glow circle */}
-                    {isHovered && (
-                      <circle
-                        cx={`${point.x}%`}
-                        cy={`${point.y}%`}
-                        r={size * 2.5}
-                        fill={color}
-                        opacity="0.15"
-                        className="point-glow"
-                      />
-                    )}
-                    {/* Main point */}
-                    <circle
-                      cx={`${point.x}%`}
-                      cy={`${point.y}%`}
-                      r={size}
-                      fill={color}
-                      opacity={isHovered ? 1 : 0.8}
-                      filter="url(#glow)"
-                      className="map-point"
-                    />
-                    {/* Tooltip on hover */}
-                    {isHovered && (
-                      <text
-                        x={`${point.x}%`}
-                        y={`${point.y - 5}%`}
-                        textAnchor="middle"
-                        fill="#00d4ff"
-                        fontSize="11"
-                        fontWeight="600"
-                        className="point-label"
-                      >
-                        {point.label}
-                      </text>
-                    )}
-                  </g>
-                );
-              })}
-            </svg>
-
-            <div className="map-controls-top-right">
-              <button className="setting-button-red" title="Map settings">
-                <Settings2 size={18} />
-              </button>
-            </div>
-
-            {/* Legend */}
-            <div className="map-legend">
-              <div className="legend-title">Evidence Intensity</div>
-              <div className="legend-items">
-                <div className="legend-item">
-                  <span className="legend-dot" style={{ backgroundColor: "#00d4ff" }}></span>
-                  High impact
-                </div>
-                <div className="legend-item">
-                  <span className="legend-dot" style={{ backgroundColor: "#0095da" }}></span>
-                  Active signal
-                </div>
-                <div className="legend-item">
-                  <span className="legend-dot" style={{ backgroundColor: "#00ff88" }}></span>
-                  Emerging node
-                </div>
-              </div>
-            </div>
-
-            {/* KPI Stack */}
-            <div className="map-kpi-stack">
-              <div className="kpi-item">
-                <div className="kpi-label">Active Labs</div>
-                <div className="kpi-value">324</div>
-              </div>
-              <div className="kpi-item">
-                <div className="kpi-label">Linked Universities</div>
-                <div className="kpi-value">128</div>
-              </div>
-              <div className="kpi-item">
-                <div className="kpi-label">Priority Topics</div>
-                <div className="kpi-value">17</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <WorldMap />
       </section>
     </main>
   );
