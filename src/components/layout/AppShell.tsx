@@ -1,6 +1,7 @@
 import { LogIn, Search, Settings } from "lucide-react";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import { Footer } from "./Footer";
 
 interface NewsItem {
   id: string;
@@ -217,6 +218,8 @@ export function AppShell() {
       <div className="workspace-stage">
         <Outlet />
       </div>
+
+      <Footer />
     </div>
   );
 }

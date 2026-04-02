@@ -1,5 +1,4 @@
 .monitor-shell {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
@@ -317,8 +316,7 @@
 
 
 .workspace-stage {
-  flex: 1;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -380,5 +378,95 @@
   .ticker-box {
     border-right: none;
     border-bottom: 1px solid #d0d0d0;
+  }
+}
+
+/* Footer Styles */
+.monitor-footer {
+  background: linear-gradient(90deg, #e8f0f7 0%, #f0f5fa 50%, #e8f0f7 100%);
+  color: #1a1a1a;
+  padding: 24px 16px;
+  border-top: 2px solid #00a8a0;
+  font-size: 13px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  flex-shrink: 0;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+}
+
+.footer-brand {
+  flex-shrink: 0;
+}
+
+.footer-brand-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #00a8a0;
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+.footer-links {
+  display: flex;
+  gap: 32px;
+}
+
+.footer-link {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #00a8a0;
+}
+
+.footer-disclaimer {
+  background: #f0f5fa;
+  padding: 14px 16px;
+  border-radius: 4px;
+  border: 1px solid #e0e8f0;
+  font-size: 12px;
+  color: #4d6784;
+  line-height: 1.6;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-disclaimer p {
+  margin: 0;
+}
+
+/* Footer Responsive Design */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .footer-links {
+    gap: 24px;
+  }
+
+  .monitor-footer {
+    padding: 16px 12px;
+  }
+
+  .footer-disclaimer {
+    padding: 12px;
+    font-size: 11px;
   }
 }

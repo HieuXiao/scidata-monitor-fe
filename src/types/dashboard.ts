@@ -1,6 +1,6 @@
 export type TrendDirection = "up" | "down";
 export type Audience = "Researcher" | "Student" | "Professor";
-export type SourceFilter = "All" | "PubMed" | "arXiv" | "OpenAlex" | "Events" | "Journals";
+export type SourceFilter = "All" | "PubMed" | "arXiv" | "OpenAlex" | "Events" | "Journals" | "Nature" | "IEEE";
 export type TimeWindow = "24H" | "7D" | "30D" | "Quarter";
 export type SortMethod = "Citation Velocity" | "Clinical Relevance" | "Replication Score";
 export type ImpactLevel = "high" | "medium" | "low";
@@ -35,6 +35,11 @@ export interface ResearchFeedItem {
   replicationScore: number;
   institution: string;
   region: string;
+  doi?: string;
+  authors?: string;
+  primaryAuthor?: string;
+  citations?: number;
+  domain?: "All" | "Radiogenomics" | "Immunotherapy" | "Precision Medicine";
 }
 
 export interface MapPoint {

@@ -19,7 +19,7 @@ body,
 
 body {
   margin: 0;
-  overflow: hidden;
+  overflow: auto;
   color: #1a1a1a;
   background: #ffffff;
   font-family: var(--font-ui);
@@ -29,6 +29,31 @@ body {
 button,
 input {
   font-family: inherit;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-color: #d0d0d0 #f5f5f5;
+  scrollbar-width: thin;
 }
 
 .fade-up {
