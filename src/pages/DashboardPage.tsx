@@ -97,6 +97,19 @@ export default function DashboardPage() {
               <div className="filter-panel">
                 <div className="filter-panel-header">
                   <h3>Advanced Filters</h3>
+
+                  <button
+                    className="filter-btn-reset"
+                    onClick={() => {
+                      setSelectedDomain("All");
+                      setSelectedTime("24H");
+                      setSearchInput("");
+                    }}
+                    title="Reset all filters"
+                    aria-label="Reset filters"
+                  >
+                    <RotateCcw size={13} />
+                  </button>
                 </div>
                 <div className="filter-panel-content">
                   <div className="filter-section">
@@ -128,30 +141,14 @@ export default function DashboardPage() {
                       {timeFilters.map((time) => (
                         <button
                           key={time}
-                          className={`filter-time-btn ${
-                            selectedTime === time ? "active" : ""
-                          }`}
+                          className={`filter-time-btn ${selectedTime === time ? "active" : ""
+                            }`}
                           onClick={() => setSelectedTime(time)}
                         >
                           {time}
                         </button>
                       ))}
                     </div>
-                  </div>
-
-                  <div className="filter-actions">
-                    <button
-                      className="filter-btn-reset"
-                      onClick={() => {
-                        setSelectedDomain("All");
-                        setSelectedTime("24H");
-                        setSearchInput("");
-                      }}
-                      title="Reset all filters"
-                      aria-label="Reset filters"
-                    >
-                      <RotateCcw size={13} />
-                    </button>
                   </div>
                 </div>
               </div>
