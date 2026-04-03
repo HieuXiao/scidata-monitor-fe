@@ -1,17 +1,27 @@
 import { useState, type ChangeEvent } from "react";
-import { RESEARCH_FEED } from "../data/dashboardData";
+import {
+  RESEARCH_FEED,
+  getImpactLevel,
+} from "../data/dashboardData";
 import { WorldMap } from "../components/WorldMap";
-import { Bookmark, Filter, RotateCcw } from "lucide-react";
+import { ResearchItemModal } from "../components/ResearchItemModal";
+import type { ResearchFeedItem } from "../types/dashboard";
+import {
+  Bookmark,
+  Filter,
+  RotateCcw,
+  ExternalLink,
+} from "lucide-react";
 
-type DomainFilter = "All" | "Radiogenomics" | "Immunotherapy" | "Precision Medicine";
+type DomainFilter = "All" | "Artificial Intelligence & Data Science" | "Life Sciences & Medicine" | "Physics & Quantum" | "Materials Science" | "Climate & Earth Science" | "Neuroscience" | "Genomics";
 type TimeFilter = "24H" | "7D" | "30D";
 
 export default function DashboardPage() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedDomain, setSelectedDomain] = useState<DomainFilter>("All");
   const [selectedTime, setSelectedTime] = useState<TimeFilter>("24H");
-  const [_selectedCard, _setSelectedCard] = useState<string | null>(null); // TODO: Used for modal/detail view
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ResearchFeedItem | null>(null);
 
   const timeFilters: TimeFilter[] = ["24H", "7D", "30D"];
 
@@ -19,102 +29,78 @@ export default function DashboardPage() {
     setSearchInput(event.target.value);
   };
 
-  const handleFilterButtonClick = () => {
-    setShowFilterPanel(!showFilterPanel);
-  };
-
-  const handleCardClick = (cardId: string) => {
-    _setSelectedCard(cardId);
-    // TODO: Implement modal/detail panel opening
-    console.log("Opening detail view for:", cardId);
-  };
-
-  const handleActionClick = (e: React.MouseEvent, actionType: string, cardId: string) => {
-    e.stopPropagation();
-    console.log(`${actionType} clicked for card:`, cardId);
-    // TODO: Implement action handlers
-  };
-
   const filteredFeed = RESEARCH_FEED.filter((item) => {
-    const matchesDomain = selectedDomain === "All" || item.domain === selectedDomain;
+    const matchesDomain =
+      selectedDomain === "All" || item.domain === selectedDomain;
     const matchesSearch =
       searchInput === "" ||
       item.title.toLowerCase().includes(searchInput.toLowerCase()) ||
-      item.tags.some((tag) => tag.toLowerCase().includes(searchInput.toLowerCase())) ||
+      item.tags.some((tag) =>
+        tag.toLowerCase().includes(searchInput.toLowerCase())
+      ) ||
       item.institution.toLowerCase().includes(searchInput.toLowerCase());
     return matchesDomain && matchesSearch;
   });
 
   return (
-    <main className="dashboard-main">
-      <aside className="left-sidebar">
-        {/* Compact Controls Section */}
-        <div className="research-controls">
-          {/* Search Bar */}
-          <div className="search-filter-row">
-            <input
-              type="text"
-              placeholder="Search research, authors, institutions..."
-              className="sidebar-search"
-              value={searchInput}
-              onChange={handleSearch}
-              aria-label="Search research papers"
-            />
-            <button
-              className={`filter-icon-button ${showFilterPanel ? "active" : ""}`}
-              title="Advanced filters"
-              onClick={handleFilterButtonClick}
-              aria-expanded={showFilterPanel}
-              aria-label="Toggle filter panel"
-            >
-              <Filter size={18} />
-            </button>
+    <div className="dashboard-wrapper">
+      {/* ── News Ticker Strip ── */}
+      <div className="news-ticker-strip" role="region" aria-label="Latest research news">
+        <div className="news-ticker-label">
+          <span>Live Feed</span>
+          <span className="news-ticker-dot">●</span>
+        </div>
+        <div className="news-ticker-container">
+          <div className="news-ticker-content">
+            {RESEARCH_FEED.map((item) => (
+              <span key={item.id} className="news-ticker-item" onClick={() => setSelectedItem(item)}>
+                <span className="news-ticker-source">{item.source}</span>
+                <span className="news-ticker-title">{item.title}</span>
+              </span>
+            ))}
+            {/* Duplicate for seamless infinite scrolling */}
+            {RESEARCH_FEED.map((item) => (
+              <span key={`${item.id}-dup`} className="news-ticker-item" onClick={() => setSelectedItem(item)}>
+                <span className="news-ticker-source">{item.source}</span>
+                <span className="news-ticker-title">{item.title}</span>
+              </span>
+            ))}
           </div>
+        </div>
+      </div>
 
-          {/* Filter Panel */}
-          {showFilterPanel && (
-            <div className="filter-panel">
-              <div className="filter-panel-header">
-                <h3>Advanced Filters</h3>
-              </div>
+      {/* ── Main Grid ── */}
+      <main className="dashboard-main">
+        {/* Left Sidebar */}
+        <aside className="left-sidebar">
+          {/* Search + Filter Controls */}
+          <div className="research-controls">
+            <div className="search-filter-row">
+              <input
+                type="text"
+                placeholder="Search papers, authors..."
+                className="sidebar-search"
+                value={searchInput}
+                onChange={handleSearch}
+                aria-label="Search research papers"
+              />
+              <button
+                className={`filter-icon-button ${showFilterPanel ? "active" : ""}`}
+                title="Advanced filters"
+                onClick={() => setShowFilterPanel(!showFilterPanel)}
+                aria-expanded={showFilterPanel}
+                aria-label="Toggle filter panel"
+              >
+                <Filter size={14} />
+              </button>
+            </div>
 
-              <div className="filter-panel-content">
-                {/* Domain Filter Section */}
-                <div className="filter-section">
-                  <label htmlFor="domain-filter" className="filter-label">
-                    Research Domain
-                  </label>
-                  <select
-                    id="domain-filter"
-                    value={selectedDomain}
-                    onChange={(e) => setSelectedDomain(e.target.value as DomainFilter)}
-                    className="filter-select"
-                  >
-                    <option value="All">All Domains</option>
-                    <option value="Radiogenomics">Radiogenomics</option>
-                    <option value="Immunotherapy">Immunotherapy</option>
-                    <option value="Precision Medicine">Precision Medicine</option>
-                  </select>
-                </div>
+            {/* Filter Panel */}
+            {showFilterPanel && (
+              <div className="filter-panel">
+                <div className="filter-panel-header">
+                  <h3>Advanced Filters</h3>
 
-                {/* Time Window Filter Section */}
-                <div className="filter-section">
-                  <label className="filter-label">Time Window</label>
-                  <div className="filter-time-buttons">
-                    {timeFilters.map((time) => (
-                      <button
-                        key={time}
-                        className={`filter-time-btn ${selectedTime === time ? "active" : ""}`}
-                        onClick={() => setSelectedTime(time)}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="filter-actions">
                   <button
                     className="filter-btn-reset"
                     onClick={() => {
@@ -125,67 +111,187 @@ export default function DashboardPage() {
                     title="Reset all filters"
                     aria-label="Reset filters"
                   >
-                    <RotateCcw size={16} />
+                    <RotateCcw size={13} />
                   </button>
                 </div>
-              </div>
-            </div>
-          )}
-        </div>
+                <div className="filter-panel-content">
+                  <div className="filter-section">
+                    <label htmlFor="domain-filter" className="filter-label">
+                      Domain
+                    </label>
+                    <select
+                      id="domain-filter"
+                      value={selectedDomain}
+                      onChange={(e) =>
+                        setSelectedDomain(e.target.value as DomainFilter)
+                      }
+                      className="filter-select"
+                    >
+                      <option value="All">All Domains</option>
+                      <option value="Artificial Intelligence & Data Science">Artificial Intelligence & Data Science</option>
+                      <option value="Life Sciences & Medicine">Life Sciences & Medicine</option>
+                      <option value="Physics & Quantum">Physics & Quantum</option>
+                      <option value="Materials Science">Materials Science</option>
+                      <option value="Climate & Earth Science">Climate & Earth Science</option>
+                      <option value="Neuroscience">Neuroscience</option>
+                      <option value="Genomics">Genomics</option>
+                    </select>
+                  </div>
 
-        {/* Research Feed Cards List */}
-        <div className="feed-cards-container">
-          {filteredFeed.map((item) => (
-            <article
-              key={item.id}
-              className="research-card"
-              onClick={() => handleCardClick(item.id)}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  handleCardClick(item.id);
-                }
-              }}
-            >
-              {/* Card Header: Metadata + Bookmark Button */}
-              <div className="card-header-row">
-                <div className="card-metadata">
-                  <span className="source-label">{item.source}</span>
-                  <span className="metadata-sep">•</span>
-                  <span className="author-label">{item.primaryAuthor}</span>
-                  <span className="metadata-sep">•</span>
-                  <span className="time-label">{item.published}</span>
+                  <div className="filter-section">
+                    <label className="filter-label">Time Window</label>
+                    <div className="filter-time-buttons">
+                      {timeFilters.map((time) => (
+                        <button
+                          key={time}
+                          className={`filter-time-btn ${selectedTime === time ? "active" : ""
+                            }`}
+                          onClick={() => setSelectedTime(time)}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <button
-                  className="bookmark-btn"
-                  onClick={(e) => handleActionClick(e, "bookmark", item.id)}
-                  title="Bookmark this paper"
-                  aria-label="Bookmark"
+              </div>
+            )}
+          </div>
+
+          {/* Research Feed */}
+          <div className="feed-cards-container">
+            {filteredFeed.map((item) => {
+              const impact = getImpactLevel(item);
+              return (
+                <article
+                  key={item.id}
+                  className="research-card"
+                  role="article"
+                  tabIndex={0}
+                  onClick={() => setSelectedItem(item)}
                 >
-                  <Bookmark size={16} />
-                </button>
-              </div>
+                  {/* Row 1: Meta + Bookmark */}
+                  <div className="card-header-row">
+                    <div className="card-metadata">
+                      <span className="source-label">{item.source}</span>
+                      <span className="metadata-sep">·</span>
+                      <span className="author-label">{item.primaryAuthor}</span>
+                      <span className="metadata-sep">·</span>
+                      <span className="time-label">{item.published}</span>
+                    </div>
+                    <button
+                      className="bookmark-btn"
+                      title="Bookmark this paper"
+                      aria-label="Bookmark"
+                    >
+                      <Bookmark size={13} />
+                    </button>
+                  </div>
 
-              {/* Row 2: Title */}
-              <h3 className="card-title">{item.title}</h3>
+                  {/* Row 2: Title */}
+                  <h3 className="card-title">{item.title}</h3>
 
-              {/* Row 3: Tags */}
-              <div className="card-tags">
-                {item.tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="tag-pill">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </aside>
+                  {/* Row 3: Institution + Region */}
+                  <div className="card-institution-row">
+                    <span className="card-institution">{item.institution}</span>
+                    <span className="card-region">🌐 {item.region}</span>
+                  </div>
 
-      <section className="map-section">
-        <WorldMap />
-      </section>
-    </main>
+                  {/* Row 4: Tags */}
+                  <div className="card-tags">
+                    {item.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="tag-pill">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Row 5: Impact + Citations + DOI */}
+                  <div className="card-impact-row">
+                    <span className={`impact-badge impact-badge--${impact}`}>
+                      {impact === "high"
+                        ? "▲"
+                        : impact === "medium"
+                          ? "●"
+                          : "▽"}{" "}
+                      {impact.toUpperCase()}
+                    </span>
+                    <span className="card-citations">
+                      {item.citations} citations
+                    </span>
+                    {item.doi && (
+                      <a
+                        href={`https://doi.org/${item.doi}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="doi-link"
+                        onClick={(e) => e.stopPropagation()}
+                        title={`DOI: ${item.doi}`}
+                      >
+                        <ExternalLink size={10} />
+                        DOI
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Row 6: Metric Bars */}
+                  <div className="metric-bars">
+                    <div className="metric-row">
+                      <span className="metric-label-sm">Citation</span>
+                      <div className="metric-bar-track">
+                        <div
+                          className="metric-bar-fill"
+                          style={{ width: `${item.citationVelocity}%` }}
+                        />
+                      </div>
+                      <span className="metric-value-sm">
+                        {item.citationVelocity}
+                      </span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label-sm">Impact</span>
+                      <div className="metric-bar-track">
+                        <div
+                          className="metric-bar-fill metric-bar-fill--clinical"
+                          style={{ width: `${item.clinicalRelevance}%` }}
+                        />
+                      </div>
+                      <span className="metric-value-sm">
+                        {item.clinicalRelevance}
+                      </span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label-sm">Replication</span>
+                      <div className="metric-bar-track">
+                        <div
+                          className="metric-bar-fill metric-bar-fill--replication"
+                          style={{ width: `${item.replicationScore}%` }}
+                        />
+                      </div>
+                      <span className="metric-value-sm">
+                        {item.replicationScore}
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </aside>
+
+        {/* Map Section */}
+        <section
+          className="map-section"
+          aria-label="Global research activity map"
+        >
+          <WorldMap />
+        </section>
+      </main>
+
+      <ResearchItemModal 
+        item={selectedItem} 
+        onClose={() => setSelectedItem(null)} 
+      />
+    </div>
   );
 }
