@@ -1,7 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 import {
   RESEARCH_FEED,
-  SIGNAL_ITEMS,
   getImpactLevel,
 } from "../data/dashboardData";
 import { WorldMap } from "../components/WorldMap";
@@ -9,12 +8,10 @@ import {
   Bookmark,
   Filter,
   RotateCcw,
-  TrendingUp,
-  TrendingDown,
   ExternalLink,
 } from "lucide-react";
 
-type DomainFilter = "All" | "Radiogenomics" | "Immunotherapy" | "Precision Medicine";
+type DomainFilter = "All" | "Artificial Intelligence & Data Science" | "Life Sciences & Medicine" | "Physics & Quantum" | "Materials Science" | "Climate & Earth Science" | "Neuroscience" | "Genomics";
 type TimeFilter = "24H" | "7D" | "30D";
 
 export default function DashboardPage() {
@@ -42,32 +39,30 @@ export default function DashboardPage() {
     return matchesDomain && matchesSearch;
   });
 
-  // Use first 4 signal items for KPI strip
-  const kpiItems = SIGNAL_ITEMS.slice(0, 4);
-
   return (
     <div className="dashboard-wrapper">
-      {/* ── KPI Metric Strip ── */}
-      <div className="kpi-strip" role="region" aria-label="Research metrics">
-        {kpiItems.map((item) => (
-          <div key={item.id} className="kpi-item">
-            <div className="kpi-top-row">
-              <span className="kpi-value">{item.value}</span>
-              <span className={`kpi-delta kpi-delta--${item.trend}`}>
-                {item.trend === "up" ? (
-                  <TrendingUp size={10} />
-                ) : (
-                  <TrendingDown size={10} />
-                )}
-                {item.change}
+      {/* ── News Ticker Strip ── */}
+      <div className="news-ticker-strip" role="region" aria-label="Latest research news">
+        <div className="news-ticker-label">
+          <span>Live Feed</span>
+          <span className="news-ticker-dot">●</span>
+        </div>
+        <div className="news-ticker-container">
+          <div className="news-ticker-content">
+            {RESEARCH_FEED.map((item) => (
+              <span key={item.id} className="news-ticker-item">
+                <span className="news-ticker-source">{item.source}</span>
+                <span className="news-ticker-title">{item.title}</span>
               </span>
-            </div>
-            <span className="kpi-label">{item.label}</span>
+            ))}
+            {/* Duplicate for seamless infinite scrolling */}
+            {RESEARCH_FEED.map((item) => (
+              <span key={`${item.id}-dup`} className="news-ticker-item">
+                <span className="news-ticker-source">{item.source}</span>
+                <span className="news-ticker-title">{item.title}</span>
+              </span>
+            ))}
           </div>
-        ))}
-        <div className="kpi-updated">
-          <span>Live feed</span>
-          <span className="kpi-time">● 2 min ago</span>
         </div>
       </div>
 
@@ -117,11 +112,13 @@ export default function DashboardPage() {
                       className="filter-select"
                     >
                       <option value="All">All Domains</option>
-                      <option value="Radiogenomics">Radiogenomics</option>
-                      <option value="Immunotherapy">Immunotherapy</option>
-                      <option value="Precision Medicine">
-                        Precision Medicine
-                      </option>
+                      <option value="Artificial Intelligence & Data Science">Artificial Intelligence & Data Science</option>
+                      <option value="Life Sciences & Medicine">Life Sciences & Medicine</option>
+                      <option value="Physics & Quantum">Physics & Quantum</option>
+                      <option value="Materials Science">Materials Science</option>
+                      <option value="Climate & Earth Science">Climate & Earth Science</option>
+                      <option value="Neuroscience">Neuroscience</option>
+                      <option value="Genomics">Genomics</option>
                     </select>
                   </div>
 
@@ -251,7 +248,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <div className="metric-row">
-                      <span className="metric-label-sm">Clinical</span>
+                      <span className="metric-label-sm">Impact</span>
                       <div className="metric-bar-track">
                         <div
                           className="metric-bar-fill metric-bar-fill--clinical"

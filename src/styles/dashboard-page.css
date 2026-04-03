@@ -11,94 +11,103 @@
   overflow: hidden;
 }
 
-/* ── KPI Metric Strip ────────────────────────────── */
-.kpi-strip {
-  display: flex;
-  align-items: stretch;
-  background: var(--sci-surface);
-  border-bottom: 1px solid var(--sci-border);
-  padding: 0 20px;
-  flex-shrink: 0;
-  overflow-x: auto;
-}
-
-.kpi-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 10px 20px;
-  border-right: 1px solid var(--sci-border);
-  min-width: 148px;
-  flex-shrink: 0;
-}
-
-.kpi-item:last-of-type {
-  border-right: 1px solid var(--sci-border);
-}
-
-.kpi-top-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 3px;
-}
-
-.kpi-value {
-  font-family: var(--sci-mono);
-  font-size: 19px;
-  font-weight: 500;
-  color: var(--sci-text);
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.kpi-delta {
+/* ── News Ticker Strip ───────────────────────────── */
+.news-ticker-strip {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-family: var(--sci-mono);
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.kpi-delta--up {
-  color: var(--sci-positive);
-}
-
-.kpi-delta--down {
-  color: var(--sci-danger);
-}
-
-.kpi-label {
-  font-size: 10px;
-  color: var(--sci-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.kpi-updated {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 10px 16px 10px 20px;
-  margin-left: auto;
+  background: var(--sci-surface);
+  border-bottom: 1px solid var(--sci-border);
+  height: 48px;
   flex-shrink: 0;
-  gap: 3px;
+  overflow: hidden;
+  position: relative;
 }
 
-.kpi-updated span:first-child {
-  font-size: 10px;
+.news-ticker-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  background: var(--sci-surface);
+  border-right: 1px solid var(--sci-border);
+  height: 100%;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--sci-muted-light);
+  color: var(--sci-text-2);
+  z-index: 2;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
 }
 
-.kpi-time {
-  font-family: var(--sci-mono);
-  font-size: 12px;
-  color: var(--sci-positive) !important;
+.news-ticker-dot {
+  color: var(--sci-positive);
+  font-size: 10px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.news-ticker-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 100%;
+  align-items: center;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 1%, black 99%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 1%, black 99%, transparent);
+}
+
+.news-ticker-content {
+  display: inline-flex;
+  align-items: center;
+  animation: ticker-scroll 45s linear infinite;
+  padding-left: 20px;
+}
+
+.news-ticker-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); } 
+}
+
+.news-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 32px;
+}
+
+.news-ticker-source {
+  font-weight: 700;
+  color: var(--sci-accent);
+  background: var(--sci-accent-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.news-ticker-title {
+  font-size: 13px;
   font-weight: 500;
+  color: var(--sci-text);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.news-ticker-title:hover {
+  color: var(--sci-accent);
+  text-decoration: underline;
 }
 
 /* ── Main Grid ───────────────────────────────────── */
@@ -618,20 +627,11 @@
   .dashboard-main {
     grid-template-columns: 340px 1fr;
   }
-
-  .kpi-item {
-    min-width: 130px;
-    padding: 10px 14px;
-  }
 }
 
 @media (max-width: 1024px) {
   .dashboard-main {
     grid-template-columns: 300px 1fr;
-  }
-
-  .kpi-item {
-    min-width: 120px;
   }
 }
 
@@ -652,14 +652,5 @@
 
   .map-section {
     min-height: 400px;
-  }
-
-  .kpi-strip {
-    gap: 0;
-  }
-
-  .kpi-item {
-    min-width: 110px;
-    padding: 8px 12px;
   }
 }

@@ -4,8 +4,9 @@ export function Footer() {
       <div className="footer-content">
         <div className="footer-brand">
           <p className="footer-brand-name">SciData Monitor</p>
+          <p className="footer-tagline-sm">Global Research Intelligence Platform</p>
           <p className="footer-data-sources">
-            Data sources: PubMed · arXiv · OpenAlex · Nature · IEEE
+            Data sources: PubMed · arXiv · OpenAlex · Nature · IEEE · Scopus · bioRxiv · SSRN
           </p>
         </div>
 
@@ -19,9 +20,10 @@ export function Footer() {
 
       <div className="footer-disclaimer">
         <p>
-          SciData Monitor is an experimental research intelligence platform built for academic use.
-          Data is aggregated from public sources and may not reflect real-time publication counts.
-          Not affiliated with any government agency or journal publisher.
+          SciData Monitor is a global research intelligence platform aggregating scientific activity
+          across all major disciplines — from Artificial Intelligence & Data Science and Life Sciences & Medicine to Physics & Quantum, Materials Science, Climate & Earth Science, Neuroscience, and Genomics. Data is sourced from public
+          repositories and may not reflect real-time counts. Not affiliated with any government agency
+          or journal publisher.
         </p>
       </div>
     </footer>

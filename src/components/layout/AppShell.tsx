@@ -22,12 +22,14 @@ const MOCK_SEARCH: SearchResult[] = [
   { id: "2", title: "MIT", category: "University" },
   { id: "3", title: "Stanford University", category: "University" },
   { id: "4", title: "Max Planck Institute", category: "Research Institute" },
-  { id: "5", title: "RIKEN", category: "Research Institute" },
-  { id: "6", title: "United States", category: "Country" },
-  { id: "7", title: "Germany", category: "Country" },
-  { id: "8", title: "Japan", category: "Country" },
-  { id: "9", title: "Radiogenomics", category: "Research Domain" },
-  { id: "10", title: "MGMT Methylation", category: "Research Topic" },
+  { id: "5", title: "CERN", category: "Research Institute" },
+  { id: "6", title: "Artificial Intelligence", category: "Research Domain" },
+  { id: "7", title: "Quantum Computing", category: "Research Domain" },
+  { id: "8", title: "Climate Science", category: "Research Domain" },
+  { id: "9", title: "Neuroscience", category: "Research Domain" },
+  { id: "10", title: "Genomics & CRISPR", category: "Research Topic" },
+  { id: "11", title: "Materials Science", category: "Research Domain" },
+  { id: "12", title: "Renewable Energy", category: "Research Topic" },
 ];
 
 export function AppShell() {
@@ -76,7 +78,10 @@ export function AppShell() {
         {/* Brand */}
         <div className="brand-block" onClick={() => navigate("/dashboard")} style={{ cursor: "pointer" }}>
           <img src="/favicon.ico" alt="SciData Monitor logo" className="brand-mark" />
-          <p className="brand-name">SciData Monitor</p>
+          <div className="brand-text">
+            <p className="brand-name">SciData Monitor</p>
+            <span className="brand-tagline">Global Research Intelligence Platform</span>
+          </div>
         </div>
 
         {/* Navigation Tabs */}

@@ -392,7 +392,7 @@ export function WorldMap() {
           fontSize: "11px", fontWeight: "700", color: "#0f172a",
           fontFamily: "'Inter', sans-serif", letterSpacing: "-0.01em",
         }}>
-          🌐 Global Research Activity
+          🌐 Research Activity Map
         </div>
         <div style={{
           fontSize: "10px", color: "#64748b",
@@ -417,7 +417,7 @@ export function WorldMap() {
           textTransform: "uppercase", letterSpacing: "0.06em",
           marginBottom: "5px", fontFamily: "'Inter', sans-serif",
         }}>
-          Activity Level
+          Research Activity
         </div>
         {[
           { color: "#e74c3c", label: "High Priority" },

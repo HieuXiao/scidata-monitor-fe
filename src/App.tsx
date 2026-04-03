@@ -19,7 +19,7 @@ const router = createBrowserRouter([
         element: (
           <PlaceholderPage
             title="Trend Analytics"
-            description="Trend charts are reserved for keyword momentum exploration and timeline diagnostics."
+            description="Track emerging research trends across multiple scientific domains and identify fast-growing topics globally."
           />
         ),
       },
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: (
           <PlaceholderPage
             title="Topic Explorer"
-            description="Topic clustering and semantic scatter views will be mounted in this section."
+            description="Explore structured topic clusters derived from large-scale scientific publications across all disciplines."
           />
         ),
       },
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
         element: (
           <PlaceholderPage
             title="Collaboration Network"
-            description="Co-authorship graph analytics and node-level details will be visualized here."
+            description="Analyze collaboration networks between researchers, institutions, and countries worldwide."
           />
         ),
       },
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         element: (
           <PlaceholderPage
             title="Institution Analytics"
-            description="Institution benchmark and output comparison screens will appear in this module."
+            description="Compare research output and impact across global universities and organizations."
           />
         ),
       },

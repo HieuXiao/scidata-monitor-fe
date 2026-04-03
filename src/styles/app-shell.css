@@ -50,6 +50,22 @@
   color: var(--sci-accent);
   margin: 0;
   white-space: nowrap;
+  line-height: 1.2;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-tagline {
+  font-size: 9px;
+  color: var(--sci-muted-light);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 /* ── Navigation Tabs ─────────────────────────────── */
@@ -252,6 +268,15 @@
   font-weight: 700;
   color: var(--sci-accent);
   letter-spacing: 0.02em;
+  margin: 0 0 2px 0;
+}
+
+.footer-tagline-sm {
+  font-size: 10px;
+  color: var(--sci-muted-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
   margin: 0 0 4px 0;
 }
 
