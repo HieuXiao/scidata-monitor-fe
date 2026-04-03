@@ -4,6 +4,8 @@ import {
   getImpactLevel,
 } from "../data/dashboardData";
 import { WorldMap } from "../components/WorldMap";
+import { ResearchItemModal } from "../components/ResearchItemModal";
+import type { ResearchFeedItem } from "../types/dashboard";
 import {
   Bookmark,
   Filter,
@@ -19,6 +21,7 @@ export default function DashboardPage() {
   const [selectedDomain, setSelectedDomain] = useState<DomainFilter>("All");
   const [selectedTime, setSelectedTime] = useState<TimeFilter>("24H");
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ResearchFeedItem | null>(null);
 
   const timeFilters: TimeFilter[] = ["24H", "7D", "30D"];
 
@@ -50,14 +53,14 @@ export default function DashboardPage() {
         <div className="news-ticker-container">
           <div className="news-ticker-content">
             {RESEARCH_FEED.map((item) => (
-              <span key={item.id} className="news-ticker-item">
+              <span key={item.id} className="news-ticker-item" onClick={() => setSelectedItem(item)}>
                 <span className="news-ticker-source">{item.source}</span>
                 <span className="news-ticker-title">{item.title}</span>
               </span>
             ))}
             {/* Duplicate for seamless infinite scrolling */}
             {RESEARCH_FEED.map((item) => (
-              <span key={`${item.id}-dup`} className="news-ticker-item">
+              <span key={`${item.id}-dup`} className="news-ticker-item" onClick={() => setSelectedItem(item)}>
                 <span className="news-ticker-source">{item.source}</span>
                 <span className="news-ticker-title">{item.title}</span>
               </span>
@@ -165,6 +168,7 @@ export default function DashboardPage() {
                   className="research-card"
                   role="article"
                   tabIndex={0}
+                  onClick={() => setSelectedItem(item)}
                 >
                   {/* Row 1: Meta + Bookmark */}
                   <div className="card-header-row">
@@ -283,6 +287,11 @@ export default function DashboardPage() {
           <WorldMap />
         </section>
       </main>
+
+      <ResearchItemModal 
+        item={selectedItem} 
+        onClose={() => setSelectedItem(null)} 
+      />
     </div>
   );
 }

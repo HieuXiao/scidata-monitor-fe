@@ -220,7 +220,7 @@
 
 /* Filter Panel */
 .filter-panel {
-  background: rgba(0,0,0,0.015);
+  background: rgba(0, 0, 0, 0.015);
   border: 1px solid var(--sci-border);
   border-radius: 8px;
   padding: 12px;
@@ -688,10 +688,318 @@
 }
 
 .leaflet-tooltip.custom-map-tooltip::before {
-  display: none !important; /* Hide default arrow */
+  display: none !important;
+  /* Hide default arrow */
 }
 
 /* Enhancing Leaflet UI for Dark Map */
 .leaflet-container {
   background: #e2e8f0 !important;
+}
+
+/* ── Specific Research Modal Styling ───────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.01);
+  /* reduced opacity */
+  backdrop-filter: blur(2px);
+  /* reduced blur */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.modal-content {
+  background: var(--sci-surface);
+  border: 1px solid var(--sci-border);
+  border-radius: var(--sci-radius);
+  width: 100%;
+  max-width: 850px;
+  /* increased width */
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: modalScaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--sci-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  display: flex;
+}
+
+.modal-close-btn:hover {
+  background: var(--sci-surface-2);
+  color: var(--sci-danger);
+}
+
+.modal-header {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--sci-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-source-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sci-accent);
+  background: var(--sci-accent-bg);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--sci-text);
+  line-height: 1.35;
+}
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-section h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sci-text-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.modal-summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--sci-text-2);
+  white-space: pre-wrap;
+}
+
+.scrollable-section .modal-summary {
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.modal-meta-grid,
+.modal-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px;
+  background: var(--sci-surface-2);
+  border-radius: var(--sci-radius);
+  border: 1px solid var(--sci-border);
+}
+
+.modal-article-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .modal-article-layout {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.modal-article-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-article-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-left: 20px;
+  border-left: 1px solid var(--sci-border);
+}
+
+.modal-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--sci-surface-2);
+  border-radius: var(--sci-radius);
+  border: 1px solid var(--sci-border);
+}
+
+.modal-authors {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--sci-text-2);
+  line-height: 1.5;
+  background: var(--sci-surface-2);
+  padding: 12px 16px;
+  border-radius: var(--sci-radius);
+}
+
+.modal-authors strong {
+  color: var(--sci-text);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--sci-text-2);
+  font-weight: 500;
+}
+
+.modal-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metric-box {
+  background: var(--sci-surface-2);
+  border: 1px solid var(--sci-border);
+  padding: 12px;
+  border-radius: var(--sci-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sci-muted-light);
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--sci-text);
+  font-family: var(--sci-mono);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.modal-tag {
+  background: var(--sci-bg);
+  border: 1px solid var(--sci-border);
+  color: var(--sci-text-2);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.modal-footer {
+  padding: 12px 24px;
+  border-top: 1px solid var(--sci-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--sci-surface-2);
+}
+
+.footer-source-info {
+  font-size: 12px;
+  color: var(--sci-muted);
+  font-weight: 500;
+}
+
+.modal-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--sci-radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.modal-action-btn.primary {
+  background: var(--sci-accent);
+  color: white;
+  border: 1px solid var(--sci-accent);
+}
+
+.modal-action-btn.primary:hover {
+  background: #1d4ed8;
+}
+
+.modal-action-btn.secondary {
+  background: var(--sci-surface);
+  color: var(--sci-text);
+  border: 1px solid var(--sci-border);
+}
+
+.modal-action-btn.secondary:hover {
+  background: var(--sci-border);
 }
