@@ -10,6 +10,8 @@ interface MapPoint {
   x: number;
   y: number;
   level: "high" | "medium" | "low";
+  activeEvent?: string;
+  eventTime?: string;
 }
 
 const DEFAULT_MAP_STATE = {
@@ -53,13 +55,14 @@ export function WorldMap() {
         scrollWheelZoom: true,
         zoomControl: false,
         maxBounds: WORLD_BOUNDS,
-        maxBoundsViscosity: 0, // Remove bounce/snap - smooth dragging
+        maxBoundsViscosity: 1.0, // Solid bounds, preventing bounce out
         inertia: true,
         inertiaDeceleration: 3000,
       });
 
       // Add OpenStreetMap tile layer with error handling
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      // Map tile layer with elegant light mode
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
         attribution: '',
         maxZoom: 6,
         tileSize: 256,
@@ -69,19 +72,92 @@ export function WorldMap() {
       // Adjust map background
       const mapElement = containerRef.current;
       if (mapElement) {
-        mapElement.style.backgroundColor = "#d0e8f0";
+        mapElement.style.backgroundColor = "#e2e8f0";
         const leafletContainer = mapElement.querySelector(".leaflet-container");
         if (leafletContainer) {
-          (leafletContainer as HTMLElement).style.backgroundColor = "#d0e8f0";
+          (leafletContainer as HTMLElement).style.backgroundColor = "#e2e8f0";
         }
       }
 
-      // Enforce bounds when dragging
-      mapRef.current.on("drag", () => {
-        if (mapRef.current && !WORLD_BOUNDS.contains(mapRef.current.getBounds())) {
-          mapRef.current.fitBounds(WORLD_BOUNDS, { animate: false });
-        }
-      });
+      // Fetch and attach Country GeoJSON for hover interactions
+      fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson")
+        .then(res => res.json())
+        .then(data => {
+          if (!mapRef.current) return;
+          
+          L.geoJSON(data, {
+            style: {
+              fillColor: "transparent",
+              color: "transparent",
+              weight: 1
+            },
+            onEachFeature: (feature, layer) => {
+              const props = feature.properties || {};
+              const countryName = props.name || props.ADMIN || props.NAME || "Unknown Region";
+              
+              // Generate stable pseudo-random data based on country name length
+              const hash = (countryName as string).split('').reduce((sum: number, char: string) => sum + char.charCodeAt(0), 0);
+              const pubs = 1000 + (hash * 15) + (hash % 100 * 50);
+              const researchers = 500 + (hash * 8) + (hash % 50 * 20);
+              const rank = (hash % 150) + 1;
+              const globalIndex = Math.min(99.9, 50 + (hash % 50));
+              
+              const tooltipHtml = `
+                <div style="padding: 6px; min-width: 170px;">
+                  <div style="font-weight: 700; font-size: 13px; color: #0f172a; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">📍</span> ${countryName}
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
+                    <div style="display: flex; justify-content: space-between;">
+                      <span style="color: #64748b;">Global Rank:</span>
+                      <span style="font-weight: 700; color: #2563eb;">#${rank}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span style="color: #64748b;">Impact Score:</span>
+                      <span style="font-family: monospace; font-weight: 600; color: #059669;">${globalIndex.toFixed(1)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span style="color: #64748b;">Researchers:</span>
+                      <span style="font-family: monospace; font-weight: 500; color: #334155;">${researchers.toLocaleString()}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span style="color: #64748b;">Annual Pubs:</span>
+                      <span style="font-family: monospace; font-weight: 500; color: #334155;">${pubs.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              layer.bindTooltip(tooltipHtml, {
+                className: "custom-map-tooltip",
+                sticky: true,
+                direction: "auto"
+              });
+
+              layer.on({
+                mouseover: (e) => {
+                  const l = e.target;
+                  l.setStyle({
+                    fillColor: "rgba(59, 130, 246, 0.15)",
+                    color: "rgba(59, 130, 246, 0.4)",
+                    weight: 1.5
+                  });
+                  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    l.bringToFront();
+                  }
+                },
+                mouseout: (e) => {
+                  e.target.setStyle({
+                    fillColor: "transparent",
+                    color: "transparent",
+                    weight: 1
+                  });
+                }
+              });
+            }
+          }).addTo(mapRef.current);
+        })
+        .catch(err => console.error("Error loading GeoJSON outline", err));
 
       setError(null);
     } catch (err) {
@@ -157,9 +233,9 @@ export function WorldMap() {
 
           const colorObj = getMarkerColor(point.level);
           const isHovered = hoveredPoint === point.id;
-          // Increased sizes: low=16, medium=20, high=24
-          const baseSize = point.level === "high" ? 24 : point.level === "medium" ? 20 : 16;
-          const size = isHovered ? baseSize * 1.4 : baseSize;
+          // Smaller sizes corresponding to lighter UI, base sizes: 8, 10, 12
+          const baseSize = point.level === "high" ? 14 : point.level === "medium" ? 12 : 10;
+          const size = isHovered ? baseSize * 1.5 : baseSize;
 
           // Create enhanced custom icon with better visual feedback
           const iconHtml = `
@@ -196,40 +272,37 @@ export function WorldMap() {
 
           if (!mapRef.current) return;
 
+          const tooltipHtml = `
+            <div style="padding: 12px; min-width: 220px;">
+              <div style="font-weight: 700; font-size: 13px; color: #0f172a; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                <span>${point.label}</span>
+                <span style="font-size: 9px; padding: 2px 6px; background: ${colorObj.bg}; border-radius: 4px; color: white; border: 1px solid ${colorObj.border};">${colorObj.text}</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+                <div style="font-size: 10px; font-weight: 700; color: #dc2626; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background-color: #dc2626; display: inline-block;"></span>
+                  ONGOING EVENT
+                </div>
+                <div style="font-size: 11px; color: #334155; font-weight: 500; line-height: 1.4;">
+                  ${point.activeEvent || 'Monitoring local research nodes...'}
+                </div>
+                <div style="font-size: 9px; color: #64748b; margin-top: 2px; font-family: monospace;">
+                  ${point.eventTime || 'live recording'}
+                </div>
+              </div>
+            </div>
+          `;
+
           const marker = L.marker([lat, lng], { icon: customIcon })
-            .bindPopup(
-              `<div style="
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                min-width: 200px;
-              ">
-                <div style="font-weight: 700; font-size: 15px; color: ${colorObj.bg}; margin-bottom: 8px;">
-                  ${point.label}
-                </div>
-                <div style="font-size: 13px; color: #555;">
-                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                    <div style="
-                      width: 10px;
-                      height: 10px;
-                      background-color: ${colorObj.bg};
-                      border-radius: 50%;
-                      border: 2px solid ${colorObj.border};
-                    "></div>
-                    <span style="color: #666;">${colorObj.text}</span>
-                  </div>
-                  <div style="color: #999; font-size: 12px;">
-                    Location: (${point.x.toFixed(1)}°, ${point.y.toFixed(1)}°)
-                  </div>
-                </div>
-              </div>`,
-              { 
-                closeButton: true, 
-                offset: L.point(0, -20),
-                maxWidth: 250,
-              }
-            )
+            .bindTooltip(tooltipHtml, {
+              className: "custom-map-tooltip",
+              direction: "top",
+              offset: L.point(0, -Math.round(size / 2) - 5),
+              opacity: 1
+            })
             .addTo(mapRef.current);
 
-          // Add hover events for real-time interaction feedback
+          // Add events to update state only (tooltip handles itself)
           marker.on("mouseover", () => {
             setHoveredPoint(point.id);
           });
@@ -237,11 +310,7 @@ export function WorldMap() {
             setHoveredPoint(null);
           });
           marker.on("click", () => {
-            try {
-              marker.openPopup();
-            } catch (err) {
-              console.error("Error opening popup:", err);
-            }
+            // Can add focus or select behavior here if needed later
           });
 
           markersRef.current.push(marker);
@@ -309,7 +378,7 @@ export function WorldMap() {
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div
         ref={containerRef}
-        style={{ width: "100%", height: "100%", backgroundColor: "#d0e8f0" }}
+        style={{ width: "100%", height: "100%", backgroundColor: "#e2e8f0" }}
       />
 
       {/* Reset Control */}
@@ -318,23 +387,23 @@ export function WorldMap() {
         title="Reset map to default view"
         style={{
           position: "absolute", top: "12px", right: "12px", zIndex: 1000,
-          width: "36px", height: "36px", borderRadius: "6px",
-          backgroundColor: "rgba(255,255,255,0.95)",
-          border: "1px solid #e2e8f0", cursor: "pointer",
+          width: "36px", height: "36px", borderRadius: "8px",
+          backgroundColor: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
+          border: "1px solid rgba(226, 232, 240, 0.8)", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
           transition: "all 0.15s ease", padding: 0, userSelect: "none",
-          boxShadow: "0 1px 3px rgba(15,23,42,0.10)",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f1f5f9";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "#2563eb";
+          (e.currentTarget as HTMLDivElement).style.backgroundColor = "#ffffff";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "#cbd5e1";
         }}
         onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(255,255,255,0.95)";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "#e2e8f0";
+          (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(226, 232, 240, 0.8)";
         }}
       >
-        <RotateCcw size={15} color="#64748b" />
+        <RotateCcw size={15} color="#94a3b8" />
       </div>
 
       {/* Zoom Controls */}
@@ -342,9 +411,10 @@ export function WorldMap() {
         style={{
           position: "absolute", top: "58px", right: "12px", zIndex: 1000,
           display: "flex", flexDirection: "column",
-          backgroundColor: "rgba(255,255,255,0.95)", borderRadius: "6px",
-          overflow: "hidden", border: "1px solid #e2e8f0",
-          boxShadow: "0 1px 3px rgba(15,23,42,0.10)",
+          backgroundColor: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
+          borderRadius: "8px",
+          overflow: "hidden", border: "1px solid rgba(226, 232, 240, 0.8)",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         }}
       >
         <div
@@ -353,25 +423,25 @@ export function WorldMap() {
             width: "36px", height: "36px", backgroundColor: "transparent",
             border: "none", cursor: "pointer", display: "flex",
             alignItems: "center", justifyContent: "center",
-            fontSize: "20px", fontWeight: "600", color: "#334155",
+            fontSize: "20px", fontWeight: "600", color: "#64748b",
             transition: "background 0.15s ease", padding: 0, userSelect: "none",
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f1f5f9"; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(241, 245, 249, 0.8)"; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent"; }}
         >
           +
         </div>
-        <div style={{ height: "1px", backgroundColor: "#e2e8f0" }} />
+        <div style={{ height: "1px", backgroundColor: "rgba(226, 232, 240, 0.8)" }} />
         <div
           onClick={handleZoomOut} title="Zoom out"
           style={{
             width: "36px", height: "36px", backgroundColor: "transparent",
             border: "none", cursor: "pointer", display: "flex",
             alignItems: "center", justifyContent: "center",
-            fontSize: "23px", fontWeight: "600", color: "#334155",
+            fontSize: "23px", fontWeight: "600", color: "#64748b",
             transition: "background 0.15s ease", padding: 0, userSelect: "none",
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f1f5f9"; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(241, 245, 249, 0.8)"; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent"; }}
         >
           −
@@ -382,9 +452,9 @@ export function WorldMap() {
       <div
         style={{
           position: "absolute", top: "12px", left: "12px", zIndex: 1000,
-          background: "rgba(255,255,255,0.93)",
-          border: "1px solid rgba(226,232,240,0.95)", borderRadius: "6px",
-          padding: "6px 10px", boxShadow: "0 1px 4px rgba(15,23,42,0.10)",
+          background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
+          border: "1px solid rgba(226, 232, 240, 0.8)", borderRadius: "8px",
+          padding: "6px 12px", boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
           pointerEvents: "none",
         }}
       >
@@ -406,16 +476,16 @@ export function WorldMap() {
       <div
         style={{
           position: "absolute", bottom: "32px", left: "12px", zIndex: 1000,
-          background: "rgba(255,255,255,0.93)",
-          border: "1px solid rgba(226,232,240,0.95)", borderRadius: "6px",
-          padding: "8px 10px", boxShadow: "0 1px 4px rgba(15,23,42,0.10)",
+          background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
+          border: "1px solid rgba(226, 232, 240, 0.8)", borderRadius: "8px",
+          padding: "10px 12px", boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
           pointerEvents: "none",
         }}
       >
         <div style={{
           fontSize: "9px", fontWeight: "700", color: "#64748b",
           textTransform: "uppercase", letterSpacing: "0.06em",
-          marginBottom: "5px", fontFamily: "'Inter', sans-serif",
+          marginBottom: "6px", fontFamily: "'Inter', sans-serif",
         }}>
           Research Activity
         </div>
@@ -424,11 +494,11 @@ export function WorldMap() {
           { color: "#ff9500", label: "Active Lab" },
           { color: "#2b8ac7", label: "Emerging Node" },
         ].map(({ color, label }) => (
-          <div key={label} style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "4px" }}>
+          <div key={label} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}>
             <div style={{
               width: "10px", height: "10px", borderRadius: "50%",
-              backgroundColor: color, border: "2px solid white",
-              boxShadow: `0 0 0 1px ${color}`, flexShrink: 0,
+              backgroundColor: color, border: "1px solid rgba(0,0,0,0.1)",
+              boxShadow: `0 0 4px ${color}`, flexShrink: 0,
             }} />
             <span style={{
               fontSize: "10px", color: "#334155",

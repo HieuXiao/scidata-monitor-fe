@@ -672,3 +672,26 @@
     min-height: 400px;
   }
 }
+
+/* ── Map Tooltip (Glassmorphism) ─────────────────── */
+.leaflet-tooltip.custom-map-tooltip {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 8px;
+  color: #0f172a;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  font-family: var(--font-ui), sans-serif;
+  overflow: hidden;
+}
+
+.leaflet-tooltip.custom-map-tooltip::before {
+  display: none !important; /* Hide default arrow */
+}
+
+/* Enhancing Leaflet UI for Dark Map */
+.leaflet-container {
+  background: #e2e8f0 !important;
+}

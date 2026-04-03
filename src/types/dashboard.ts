@@ -48,6 +48,8 @@ export interface MapPoint {
   x: number;
   y: number;
   level: ImpactLevel;
+  activeEvent?: string;
+  eventTime?: string;
 }
 
 export interface PlaceholderPageProps {
