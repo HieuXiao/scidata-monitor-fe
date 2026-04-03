@@ -309,11 +309,7 @@ export function WorldMap() {
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div
         ref={containerRef}
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#d0e8f0",
-        }}
+        style={{ width: "100%", height: "100%", backgroundColor: "#d0e8f0" }}
       />
 
       {/* Reset Control */}
@@ -321,130 +317,141 @@ export function WorldMap() {
         onClick={handleResetMap}
         title="Reset map to default view"
         style={{
-          position: "absolute",
-          top: "16px",
-          right: "16px",
-          zIndex: 1000,
-          width: "44px",
-          height: "44px",
-          borderRadius: "4px",
-          backgroundColor: "white",
-          border: "2px solid #d0d0d0",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all 0.2s ease",
-          padding: 0,
-          userSelect: "none",
+          position: "absolute", top: "12px", right: "12px", zIndex: 1000,
+          width: "36px", height: "36px", borderRadius: "6px",
+          backgroundColor: "rgba(255,255,255,0.95)",
+          border: "1px solid #e2e8f0", cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.15s ease", padding: 0, userSelect: "none",
+          boxShadow: "0 1px 3px rgba(15,23,42,0.10)",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f5f5f5";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "#999";
+          (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f1f5f9";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "#2563eb";
         }}
         onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor = "white";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "#d0d0d0";
+          (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(255,255,255,0.95)";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "#e2e8f0";
         }}
       >
-        <RotateCcw size={20} color="#333" />
+        <RotateCcw size={15} color="#64748b" />
       </div>
 
       {/* Zoom Controls */}
       <div
         style={{
-          position: "absolute",
-          top: "70px",
-          right: "16px",
-          zIndex: 1000,
-          display: "flex",
-          flexDirection: "column",
-          gap: "4px",
-          backgroundColor: "white",
-          borderRadius: "4px",
-          overflow: "hidden",
-          border: "2px solid #d0d0d0",
+          position: "absolute", top: "58px", right: "12px", zIndex: 1000,
+          display: "flex", flexDirection: "column",
+          backgroundColor: "rgba(255,255,255,0.95)", borderRadius: "6px",
+          overflow: "hidden", border: "1px solid #e2e8f0",
+          boxShadow: "0 1px 3px rgba(15,23,42,0.10)",
         }}
       >
         <div
-          onClick={handleZoomIn}
-          title="Zoom in"
+          onClick={handleZoomIn} title="Zoom in"
           style={{
-            width: "44px",
-            height: "44px",
-            backgroundColor: "white",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "#333",
-            transition: "all 0.2s ease",
-            padding: 0,
-            userSelect: "none",
+            width: "36px", height: "36px", backgroundColor: "transparent",
+            border: "none", cursor: "pointer", display: "flex",
+            alignItems: "center", justifyContent: "center",
+            fontSize: "20px", fontWeight: "600", color: "#334155",
+            transition: "background 0.15s ease", padding: 0, userSelect: "none",
           }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f5f5f5";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLDivElement).style.backgroundColor = "white";
-          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f1f5f9"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent"; }}
         >
           +
         </div>
-        <div style={{ height: "1px", backgroundColor: "#e0e0e0" }} />
+        <div style={{ height: "1px", backgroundColor: "#e2e8f0" }} />
         <div
-          onClick={handleZoomOut}
-          title="Zoom out"
+          onClick={handleZoomOut} title="Zoom out"
           style={{
-            width: "44px",
-            height: "44px",
-            backgroundColor: "white",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "28px",
-            fontWeight: "bold",
-            color: "#333",
-            transition: "all 0.2s ease",
-            padding: 0,
-            userSelect: "none",
+            width: "36px", height: "36px", backgroundColor: "transparent",
+            border: "none", cursor: "pointer", display: "flex",
+            alignItems: "center", justifyContent: "center",
+            fontSize: "23px", fontWeight: "600", color: "#334155",
+            transition: "background 0.15s ease", padding: 0, userSelect: "none",
           }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f5f5f5";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLDivElement).style.backgroundColor = "white";
-          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "#f1f5f9"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent"; }}
         >
           −
         </div>
       </div>
 
+      {/* ── Hub Counter (top-left) ── */}
+      <div
+        style={{
+          position: "absolute", top: "12px", left: "12px", zIndex: 1000,
+          background: "rgba(255,255,255,0.93)",
+          border: "1px solid rgba(226,232,240,0.95)", borderRadius: "6px",
+          padding: "6px 10px", boxShadow: "0 1px 4px rgba(15,23,42,0.10)",
+          pointerEvents: "none",
+        }}
+      >
+        <div style={{
+          fontSize: "11px", fontWeight: "700", color: "#0f172a",
+          fontFamily: "'Inter', sans-serif", letterSpacing: "-0.01em",
+        }}>
+          🌐 Global Research Activity
+        </div>
+        <div style={{
+          fontSize: "10px", color: "#64748b",
+          fontFamily: "'JetBrains Mono', monospace", marginTop: "2px",
+        }}>
+          {MAP_POINTS.length} hubs active
+        </div>
+      </div>
+
+      {/* ── Legend (bottom-left) ── */}
+      <div
+        style={{
+          position: "absolute", bottom: "32px", left: "12px", zIndex: 1000,
+          background: "rgba(255,255,255,0.93)",
+          border: "1px solid rgba(226,232,240,0.95)", borderRadius: "6px",
+          padding: "8px 10px", boxShadow: "0 1px 4px rgba(15,23,42,0.10)",
+          pointerEvents: "none",
+        }}
+      >
+        <div style={{
+          fontSize: "9px", fontWeight: "700", color: "#64748b",
+          textTransform: "uppercase", letterSpacing: "0.06em",
+          marginBottom: "5px", fontFamily: "'Inter', sans-serif",
+        }}>
+          Activity Level
+        </div>
+        {[
+          { color: "#e74c3c", label: "High Priority" },
+          { color: "#ff9500", label: "Active Lab" },
+          { color: "#2b8ac7", label: "Emerging Node" },
+        ].map(({ color, label }) => (
+          <div key={label} style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "4px" }}>
+            <div style={{
+              width: "10px", height: "10px", borderRadius: "50%",
+              backgroundColor: color, border: "2px solid white",
+              boxShadow: `0 0 0 1px ${color}`, flexShrink: 0,
+            }} />
+            <span style={{
+              fontSize: "10px", color: "#334155",
+              fontFamily: "'Inter', sans-serif", fontWeight: "500",
+            }}>
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
+
       {/* Error Message */}
       {error && (
-        <div
-          style={{
-            position: "absolute",
-            top: "165px",
-            right: "16px",
-            backgroundColor: "#f8d7da",
-            border: "1px solid #f5c6cb",
-            borderRadius: "4px",
-            padding: "12px",
-            color: "#721c24",
-            fontSize: "13px",
-            maxWidth: "250px",
-            zIndex: 1000,
-          }}
-        >
+        <div style={{
+          position: "absolute", top: "165px", right: "12px",
+          backgroundColor: "#fef2f2", border: "1px solid #fca5a5",
+          borderRadius: "6px", padding: "12px", color: "#991b1b",
+          fontSize: "13px", maxWidth: "250px", zIndex: 1000,
+        }}>
           {error}
         </div>
       )}
     </div>
   );
 }
+

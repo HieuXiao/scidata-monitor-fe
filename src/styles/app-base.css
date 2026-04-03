@@ -1,11 +1,85 @@
+/* ===================================================
+   DESIGN SYSTEM — SciData Monitor
+   DS Student Full-Stack Portfolio Project
+   =================================================== */
+
 :root {
+  /* ── Legacy vars (kept for atlas compatibility) ── */
   --rg-radius: 6px;
-  --rg-line: #d0d0d0;
-  --rg-muted: #999999;
-  --rg-map-ocean: #f5f5f5;
-  --font-ui: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", sans-serif;
+  --rg-line: #e2e8f0;
+  --rg-muted: #64748b;
+  --rg-map-ocean: #dbeafe;
+  --font-ui: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
+
+  /* ── Color Palette · Light Mode ─────────────────── */
+  --sci-bg:           #f8fafc;
+  --sci-surface:      #ffffff;
+  --sci-surface-2:    #f1f5f9;
+  --sci-border:       #e2e8f0;
+  --sci-border-focus: #2563eb;
+
+  --sci-primary:      #1e40af;
+  --sci-accent:       #2563eb;
+  --sci-accent-hover: #1d4ed8;
+  --sci-accent-bg:    #eff6ff;
+
+  --sci-positive:     #059669;
+  --sci-positive-bg:  #ecfdf5;
+  --sci-warning:      #d97706;
+  --sci-warning-bg:   #fffbeb;
+  --sci-danger:       #dc2626;
+  --sci-danger-bg:    #fef2f2;
+
+  --sci-text:         #0f172a;
+  --sci-text-2:       #334155;
+  --sci-muted:        #64748b;
+  --sci-muted-light:  #94a3b8;
+
+  /* ── Typography ─────────────────────────────────── */
+  --sci-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* ── Shape ──────────────────────────────────────── */
+  --sci-radius:    6px;
+  --sci-radius-lg: 10px;
+
+  /* ── Shadows ────────────────────────────────────── */
+  --sci-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --sci-shadow:    0 2px 8px rgba(15, 23, 42, 0.08);
+  --sci-shadow-lg: 0 4px 16px rgba(15, 23, 42, 0.10);
 }
 
+/* ── Dark Mode Overrides ─────────────────────────── */
+.dark {
+  --sci-bg:          #0f172a;
+  --sci-surface:     #1e293b;
+  --sci-surface-2:   #0f172a;
+  --sci-border:      #334155;
+  --sci-border-focus:#60a5fa;
+
+  --sci-primary:     #60a5fa;
+  --sci-accent:      #3b82f6;
+  --sci-accent-hover:#2563eb;
+  --sci-accent-bg:   #1e3a5f;
+
+  --sci-positive-bg: #064e3b;
+  --sci-warning-bg:  #451a03;
+  --sci-danger-bg:   #450a0a;
+
+  --sci-text:        #f1f5f9;
+  --sci-text-2:      #cbd5e1;
+  --sci-muted:       #94a3b8;
+  --sci-muted-light: #64748b;
+
+  --sci-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --sci-shadow:    0 2px 10px rgba(0, 0, 0, 0.45);
+  --sci-shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.55);
+
+  /* Update legacy vars */
+  --rg-line:  #334155;
+  --rg-muted: #94a3b8;
+}
+
+/* ── Reset ───────────────────────────────────────── */
 * {
   box-sizing: border-box;
 }
@@ -19,70 +93,58 @@ body,
 
 body {
   margin: 0;
-  overflow: auto;
-  color: #1a1a1a;
-  background: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: var(--sci-text);
+  background: var(--sci-bg);
   font-family: var(--font-ui);
   line-height: 1.35;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
-/* Custom Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f5f5f5;
-}
-
+/* ── Custom Scrollbar ────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 4px;
+  background: var(--sci-border);
+  border-radius: 3px;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--sci-muted-light); }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
-}
-
-/* Firefox scrollbar */
 * {
-  scrollbar-color: #d0d0d0 #f5f5f5;
+  scrollbar-color: var(--sci-border) transparent;
   scrollbar-width: thin;
 }
 
+/* ── Animations ──────────────────────────────────── */
 .fade-up {
   opacity: 1;
   animation: none;
 }
 
 @keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pointPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(125, 196, 255, 0.52);
-  }
-  100% {
-    box-shadow: 0 0 0 15px rgba(125, 196, 255, 0);
-  }
+  0%   { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45); }
+  100% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
 }
 
+/* ── Utility Pages ───────────────────────────────── */
 .placeholder-page,
 .not-found-page {
   height: 100%;
-  border: 1px solid var(--rg-line);
-  border-radius: var(--rg-radius);
-  background: rgba(249, 253, 255, 0.92);
+  border: 1px solid var(--sci-border);
+  border-radius: var(--sci-radius);
+  background: var(--sci-surface);
   padding: 24px;
   display: grid;
   align-content: center;
@@ -93,34 +155,35 @@ input {
 .placeholder-page h2,
 .not-found-page h2 {
   margin: 0;
-  color: #0f2c4b;
+  color: var(--sci-text);
 }
 
 .placeholder-page p,
 .not-found-page p {
   margin: 0;
-  color: #4d6784;
+  color: var(--sci-muted);
 }
 
 .not-found-link {
   width: fit-content;
   margin: 4px auto 0;
   text-decoration: none;
-  border: 1px solid #84b4db;
-  border-radius: 5px;
-  padding: 8px 11px;
-  color: #0f558d;
+  border: 1px solid var(--sci-border);
+  border-radius: var(--sci-radius);
+  padding: 8px 16px;
+  color: var(--sci-accent);
   font-weight: 600;
-  background: #e4f0fb;
+  background: var(--sci-accent-bg);
+  transition: all 0.15s ease;
+}
+
+.not-found-link:hover {
+  background: var(--sci-accent);
+  color: white;
 }
 
 @media (max-width: 1120px) {
-  body {
-    overflow: auto;
-  }
-
+  body { overflow: auto; }
   .placeholder-page,
-  .not-found-page {
-    min-height: 420px;
-  }
+  .not-found-page { min-height: 420px; }
 }
