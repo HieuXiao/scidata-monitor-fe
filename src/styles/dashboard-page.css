@@ -675,13 +675,13 @@
 
 /* ── Map Tooltip (Glassmorphism) ─────────────────── */
 .leaflet-tooltip.custom-map-tooltip {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--sci-surface);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid var(--sci-border);
   border-radius: 8px;
-  color: #0f172a;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: var(--sci-text);
+  box-shadow: 0 4px 15px var(--sci-shadow-color, rgba(0, 0, 0, 0.1));
   padding: 0;
   font-family: var(--font-ui), sans-serif;
   overflow: hidden;
@@ -694,7 +694,14 @@
 
 /* Enhancing Leaflet UI for Dark Map */
 .leaflet-container {
-  background: #e2e8f0 !important;
+  background: var(--sci-surface-2) !important;
+}
+
+.dark .map-section .leaflet-layer,
+.dark .map-section .leaflet-control-zoom-in,
+.dark .map-section .leaflet-control-zoom-out,
+.dark .map-section .leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 
 /* ── Specific Research Modal Styling ───────────────────────────── */

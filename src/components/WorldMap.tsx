@@ -69,13 +69,13 @@ export function WorldMap() {
         errorTileUrl: '',
       }).addTo(mapRef.current);
 
-      // Adjust map background
+      // Adjust map background to be transparent and controlled by CSS
       const mapElement = containerRef.current;
       if (mapElement) {
-        mapElement.style.backgroundColor = "#e2e8f0";
+        mapElement.style.backgroundColor = "transparent";
         const leafletContainer = mapElement.querySelector(".leaflet-container");
         if (leafletContainer) {
-          (leafletContainer as HTMLElement).style.backgroundColor = "#e2e8f0";
+          (leafletContainer as HTMLElement).style.backgroundColor = "transparent";
         }
       }
 
@@ -104,25 +104,25 @@ export function WorldMap() {
               
               const tooltipHtml = `
                 <div style="padding: 6px; min-width: 170px;">
-                  <div style="font-weight: 700; font-size: 13px; color: #0f172a; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                  <div style="font-weight: 700; font-size: 13px; color: var(--sci-text); margin-bottom: 6px; border-bottom: 1px solid var(--sci-border); padding-bottom: 4px; display: flex; align-items: center; gap: 6px;">
                     <span style="font-size: 14px;">📍</span> ${countryName}
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 4px; font-size: 11px;">
                     <div style="display: flex; justify-content: space-between;">
-                      <span style="color: #64748b;">Global Rank:</span>
-                      <span style="font-weight: 700; color: #2563eb;">#${rank}</span>
+                      <span style="color: var(--sci-muted);">Global Rank:</span>
+                      <span style="font-weight: 700; color: var(--sci-accent);">#${rank}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                      <span style="color: #64748b;">Impact Score:</span>
-                      <span style="font-family: monospace; font-weight: 600; color: #059669;">${globalIndex.toFixed(1)}</span>
+                      <span style="color: var(--sci-muted);">Impact Score:</span>
+                      <span style="font-family: monospace; font-weight: 600; color: var(--sci-positive);">${globalIndex.toFixed(1)}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                      <span style="color: #64748b;">Researchers:</span>
-                      <span style="font-family: monospace; font-weight: 500; color: #334155;">${researchers.toLocaleString()}</span>
+                      <span style="color: var(--sci-muted);">Researchers:</span>
+                      <span style="font-family: monospace; font-weight: 500; color: var(--sci-text-2);">${researchers.toLocaleString()}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                      <span style="color: #64748b;">Annual Pubs:</span>
-                      <span style="font-family: monospace; font-weight: 500; color: #334155;">${pubs.toLocaleString()}</span>
+                      <span style="color: var(--sci-muted);">Annual Pubs:</span>
+                      <span style="font-family: monospace; font-weight: 500; color: var(--sci-text-2);">${pubs.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -243,11 +243,11 @@ export function WorldMap() {
               width: ${size}px;
               height: ${size}px;
               background-color: ${colorObj.bg};
-              border: 3px solid white;
+              border: 3px solid var(--sci-surface);
               border-radius: 50%;
               box-shadow: 
                 0 0 0 2px ${colorObj.border},
-                0 0 ${isHovered ? 20 : 10}px rgba(0, 0, 0, 0.4),
+                0 0 ${isHovered ? 20 : 10}px var(--sci-shadow-color, rgba(0, 0, 0, 0.4)),
                 inset 0 0 ${isHovered ? 8 : 4}px rgba(255, 255, 255, 0.4);
               display: flex;
               align-items: center;
@@ -274,19 +274,19 @@ export function WorldMap() {
 
           const tooltipHtml = `
             <div style="padding: 12px; min-width: 220px;">
-              <div style="font-weight: 700; font-size: 13px; color: #0f172a; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+              <div style="font-weight: 700; font-size: 13px; color: var(--sci-text); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
                 <span>${point.label}</span>
                 <span style="font-size: 9px; padding: 2px 6px; background: ${colorObj.bg}; border-radius: 4px; color: white; border: 1px solid ${colorObj.border};">${colorObj.text}</span>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #e2e8f0; padding-top: 8px;">
-                <div style="font-size: 10px; font-weight: 700; color: #dc2626; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
-                  <span style="width: 6px; height: 6px; border-radius: 50%; background-color: #dc2626; display: inline-block;"></span>
+              <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--sci-border); padding-top: 8px;">
+                <div style="font-size: 10px; font-weight: 700; color: var(--sci-danger); text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background-color: var(--sci-danger); display: inline-block;"></span>
                   ONGOING EVENT
                 </div>
-                <div style="font-size: 11px; color: #334155; font-weight: 500; line-height: 1.4;">
+                <div style="font-size: 11px; color: var(--sci-text-2); font-weight: 500; line-height: 1.4;">
                   ${point.activeEvent || 'Monitoring local research nodes...'}
                 </div>
-                <div style="font-size: 9px; color: #64748b; margin-top: 2px; font-family: monospace;">
+                <div style="font-size: 9px; color: var(--sci-muted); margin-top: 2px; font-family: monospace;">
                   ${point.eventTime || 'live recording'}
                 </div>
               </div>
@@ -378,7 +378,7 @@ export function WorldMap() {
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div
         ref={containerRef}
-        style={{ width: "100%", height: "100%", backgroundColor: "#e2e8f0" }}
+        style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
       />
 
       {/* Reset Control */}
@@ -388,19 +388,19 @@ export function WorldMap() {
         style={{
           position: "absolute", top: "12px", right: "12px", zIndex: 1000,
           width: "36px", height: "36px", borderRadius: "8px",
-          backgroundColor: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
-          border: "1px solid rgba(226, 232, 240, 0.8)", cursor: "pointer",
+          backgroundColor: "var(--sci-surface)", opacity: 0.95,
+          border: "1px solid var(--sci-border)", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
           transition: "all 0.15s ease", padding: 0, userSelect: "none",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          boxShadow: "var(--sci-shadow-sm)",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor = "#ffffff";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "#cbd5e1";
+          (e.currentTarget as HTMLDivElement).style.backgroundColor = "var(--sci-surface-2)";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "var(--sci-border-focus)";
         }}
         onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(226, 232, 240, 0.8)";
+          (e.currentTarget as HTMLDivElement).style.backgroundColor = "var(--sci-surface)";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "var(--sci-border)";
         }}
       >
         <RotateCcw size={15} color="#94a3b8" />
@@ -411,10 +411,10 @@ export function WorldMap() {
         style={{
           position: "absolute", top: "58px", right: "12px", zIndex: 1000,
           display: "flex", flexDirection: "column",
-          backgroundColor: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
+          backgroundColor: "var(--sci-surface)", opacity: 0.95,
           borderRadius: "8px",
-          overflow: "hidden", border: "1px solid rgba(226, 232, 240, 0.8)",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          overflow: "hidden", border: "1px solid var(--sci-border)",
+          boxShadow: "var(--sci-shadow-sm)",
         }}
       >
         <div
@@ -423,25 +423,25 @@ export function WorldMap() {
             width: "36px", height: "36px", backgroundColor: "transparent",
             border: "none", cursor: "pointer", display: "flex",
             alignItems: "center", justifyContent: "center",
-            fontSize: "20px", fontWeight: "600", color: "#64748b",
+            fontSize: "20px", fontWeight: "600", color: "var(--sci-muted)",
             transition: "background 0.15s ease", padding: 0, userSelect: "none",
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(241, 245, 249, 0.8)"; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "var(--sci-surface-2)"; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent"; }}
         >
           +
         </div>
-        <div style={{ height: "1px", backgroundColor: "rgba(226, 232, 240, 0.8)" }} />
+        <div style={{ height: "1px", backgroundColor: "var(--sci-border)" }} />
         <div
           onClick={handleZoomOut} title="Zoom out"
           style={{
             width: "36px", height: "36px", backgroundColor: "transparent",
             border: "none", cursor: "pointer", display: "flex",
             alignItems: "center", justifyContent: "center",
-            fontSize: "23px", fontWeight: "600", color: "#64748b",
+            fontSize: "23px", fontWeight: "600", color: "var(--sci-muted)",
             transition: "background 0.15s ease", padding: 0, userSelect: "none",
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "rgba(241, 245, 249, 0.8)"; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "var(--sci-surface-2)"; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent"; }}
         >
           −
@@ -452,20 +452,20 @@ export function WorldMap() {
       <div
         style={{
           position: "absolute", top: "12px", left: "12px", zIndex: 1000,
-          background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
-          border: "1px solid rgba(226, 232, 240, 0.8)", borderRadius: "8px",
-          padding: "6px 12px", boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          background: "var(--sci-surface)", opacity: 0.95,
+          border: "1px solid var(--sci-border)", borderRadius: "8px",
+          padding: "6px 12px", boxShadow: "var(--sci-shadow-sm)",
           pointerEvents: "none",
         }}
       >
         <div style={{
-          fontSize: "11px", fontWeight: "700", color: "#0f172a",
+          fontSize: "11px", fontWeight: "700", color: "var(--sci-text)",
           fontFamily: "'Inter', sans-serif", letterSpacing: "-0.01em",
         }}>
           🌐 Research Activity Map
         </div>
         <div style={{
-          fontSize: "10px", color: "#64748b",
+          fontSize: "10px", color: "var(--sci-muted)",
           fontFamily: "'JetBrains Mono', monospace", marginTop: "2px",
         }}>
           {MAP_POINTS.length} hubs active
@@ -476,14 +476,14 @@ export function WorldMap() {
       <div
         style={{
           position: "absolute", bottom: "32px", left: "12px", zIndex: 1000,
-          background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(8px)",
-          border: "1px solid rgba(226, 232, 240, 0.8)", borderRadius: "8px",
-          padding: "10px 12px", boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          background: "var(--sci-surface)", opacity: 0.95,
+          border: "1px solid var(--sci-border)", borderRadius: "8px",
+          padding: "10px 12px", boxShadow: "var(--sci-shadow-sm)",
           pointerEvents: "none",
         }}
       >
         <div style={{
-          fontSize: "9px", fontWeight: "700", color: "#64748b",
+          fontSize: "9px", fontWeight: "700", color: "var(--sci-muted)",
           textTransform: "uppercase", letterSpacing: "0.06em",
           marginBottom: "6px", fontFamily: "'Inter', sans-serif",
         }}>
@@ -501,7 +501,7 @@ export function WorldMap() {
               boxShadow: `0 0 4px ${color}`, flexShrink: 0,
             }} />
             <span style={{
-              fontSize: "10px", color: "#334155",
+              fontSize: "10px", color: "var(--sci-text-2)",
               fontFamily: "'Inter', sans-serif", fontWeight: "500",
             }}>
               {label}
